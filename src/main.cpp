@@ -5,7 +5,7 @@
 using DriverEntryFn = NTSTATUS(*)(PVOID, PVOID);
 
 int main() {
-    std::vector<BYTE> buffer = Utils::File::Read(R"(D:\Projects\DriverEmulator\dist\environment\HelloWorld.sys)");
+    std::vector<BYTE> buffer = Utils::File::Read(R"(..\environment\HelloWorld.sys)");
     PortableExecutable pe(buffer);
 
     PBYTE mapped = pe.Map();

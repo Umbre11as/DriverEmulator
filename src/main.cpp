@@ -9,7 +9,7 @@ int main() {
     PortableExecutable pe(buffer);
 
     PBYTE mapped = pe.Map();
-    HMODULE ntoskrnl = LoadLibrary(R"(C:\Windows\System32\ntoskrnl.exe)");
+    HMODULE ntoskrnl = LoadLibrary("ntoskrnl.dll");
 
     if (DWORD importsRVA = pe.NtHeaders->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress) {
         for (auto importDescriptor = reinterpret_cast<PIMAGE_IMPORT_DESCRIPTOR>(mapped + importsRVA); importDescriptor->Characteristics; importDescriptor++) {
@@ -22,9 +22,8 @@ int main() {
             // ReSharper restore CppTooWideScopeInitStatement
 
             for (auto thunkData = reinterpret_cast<PIMAGE_THUNK_DATA>(mapped + importDescriptor->FirstThunk); thunkData->u1.AddressOfData; thunkData++) {
-                if (auto importByName = reinterpret_cast<PIMAGE_IMPORT_BY_NAME>(mapped + thunkData->u1.AddressOfData)) {
+                if (auto importByName = reinterpret_cast<PIMAGE_IMPORT_BY_NAME>(mapped + thunkData->u1.AddressOfData))
                     thunkData->u1.Function = reinterpret_cast<ULONGPTR>(GetProcAddress(ntoskrnl, importByName->Name));
-                }
             }
         }
     }

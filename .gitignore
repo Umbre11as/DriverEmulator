@@ -5,6 +5,5 @@
 BuildCache
 
 # Deploy files
-dist/Debug/DriverEmulator.exe
-dist/Debug/DriverEmulator.pdb
-dist/Release/DriverEmulator.exe
+dist/Debug
+dist/Release

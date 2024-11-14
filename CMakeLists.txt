@@ -4,8 +4,7 @@ project(DriverEmulator)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+add_subdirectory(emulated/ntoskrnl)
 
 add_compile_options("/FI${CMAKE_CURRENT_LIST_DIR}/vshacks.h")
 

@@ -1,0 +1,10 @@
+# CLion
+.idea
+
+# CMake build cache
+BuildCache
+
+# Deploy files
+dist/Debug/DriverEmulator.exe
+dist/Debug/DriverEmulator.pdb
+dist/Release/DriverEmulator.exe

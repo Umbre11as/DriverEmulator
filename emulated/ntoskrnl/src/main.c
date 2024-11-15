@@ -586,7 +586,7 @@ typedef enum _SYSTEM_INFORMATION_CLASS {
     MaxSystemInfoClass
 } SYSTEM_INFORMATION_CLASS;
 
-typedef NTSTATUS(*NTAPI NtQuerySystemInformationFn)(SYSTEM_INFORMATION_CLASS, PVOID, ULONG, PULONG);
+typedef NTSTATUS(*NTAPI NtQuerySystemInformationFn)(IN SYSTEM_INFORMATION_CLASS, IN OUT PVOID, IN ULONG, OUT OPTIONAL PULONG);
 
 EXPORT NTSTATUS ZwQuerySystemInformation(IN SYSTEM_INFORMATION_CLASS SystemInformationClass, IN OUT PVOID Information, IN ULONG Length, OUT OPTIONAL PULONG ReturnLength) {
     HMODULE ntdll = GetModuleHandle("ntdll.dll");
@@ -597,9 +597,9 @@ EXPORT NTSTATUS ZwQuerySystemInformation(IN SYSTEM_INFORMATION_CLASS SystemInfor
     return nqsi(SystemInformationClass, Information, Length, ReturnLength);
 }
 
-typedef NTSTATUS(*NTAPI RtlFindExportedRoutineByNameFn)(PVOID, PCSTR);
+typedef NTSTATUS(*NTAPI RtlFindExportedRoutineByNameFn)(IN PVOID, IN PCSTR);
 
-EXPORT NTSTATUS RtlFindExportedRoutineByName(PVOID BaseOfImage, IN PCSTR RoutineName) {
+EXPORT NTSTATUS RtlFindExportedRoutineByName(IN PVOID BaseOfImage, IN PCSTR RoutineName) {
     HMODULE ntdll = GetModuleHandle("ntdll.dll");
     if (ntdll == NULL)
         ntdll = LoadLibrary("ntdll.dll");

@@ -328,3 +328,7 @@ EXPORT NTSTATUS MmProtectMdlSystemAddress(IN PMDL Mdl, IN ULONG NewProtect) {
     DWORD oldProtect = 0;
     return VirtualProtect(Mdl->MappedSystemVa, Mdl->Size, NewProtect, &oldProtect) ? STATUS_SUCCESS : STATUS_UNSUCCESSFUL;
 }
+
+EXPORT NTSTATUS KeDelayExecutionThread(IN KPROCESSOR_MODE WaitMode, IN BOOLEAN Alertable, IN PLARGE_INTEGER Interval) {
+    Sleep(Interval->LowPart); // TODO: Recreate threads
+}

@@ -148,8 +148,10 @@ EXPORT PVOID ExAllocatePoolWithQuotaTag(IN __drv_strictTypeMatch(__drv_typeExpr)
     return ExAllocatePoolWithTag(PoolType, Size, Tag);
 }
 
+#define DEFAULT_TAG 0x656E6F4E // From IDA
+
 EXPORT PVOID ExAllocatePool(IN __drv_strictTypeMatch(__drv_typeExpr) POOL_TYPE PoolType, IN SIZE_T Size) {
-    return ExAllocatePoolWithTag(PoolType, Size, 0x656E6F4E);
+    return ExAllocatePoolWithTag(PoolType, Size, DEFAULT_TAG);
 }
 
 // Resharper caught schizophrenia :)
@@ -202,4 +204,12 @@ EXPORT void ExFreePoolWithTag(IN PVOID Buffer, IN ULONG Tag) {
     // ReSharper disable CppFunctionResultShouldBeUsed
     ExFreeHeapPool(Buffer);
     // ReSharper restore CppFunctionResultShouldBeUsed
+}
+
+EXPORT void ExFreePool(IN PVOID Buffer) {
+    ExFreePoolWithTag(Buffer, DEFAULT_TAG);
+}
+
+EXPORT void ExFreePool2(IN PVOID Buffer, IN ULONG Tag, IN PCPOOL_EXTENDED_PARAMETER ExtendedParameters, IN ULONG Count) {
+    ExFreePoolWithTag(Buffer, Tag);
 }

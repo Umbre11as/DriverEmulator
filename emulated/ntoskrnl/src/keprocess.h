@@ -276,6 +276,11 @@ struct _WNF_STATE_NAME {
     ULONG Data[2];                                                          //0x0
 };
 
+struct _EWOW64PROCESS {
+    VOID* Peb;                                                              //0x0
+    enum _SYSTEM_DLL_TYPE NtdllType;                                        //0x8
+};
+
 typedef struct _EPROCESS {
     struct _KPROCESS Pcb;                                                   //0x0
     struct _EX_PUSH_LOCK ProcessLock;                                       //0x438

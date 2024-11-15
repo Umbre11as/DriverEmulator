@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../keprocess.h"
+#include "../ntdll/wrapper.h"
 
 typedef struct _OBJECT_ATTRIBUTES {
     ULONG Length;
@@ -13,11 +13,6 @@ typedef struct _OBJECT_ATTRIBUTES {
 
 typedef void KSTART_ROUTINE(IN PVOID StartContext);
 typedef KSTART_ROUTINE *PKSTART_ROUTINE;
-
-typedef struct _CLIENT_ID {
-    HANDLE UniqueProcess;
-    HANDLE UniqueThread;
-} CLIENT_ID, *PCLIENT_ID;
 
 EXPORT NTSTATUS KeDelayExecutionThread(IN KPROCESSOR_MODE WaitMode, IN BOOLEAN Alertable, IN PLARGE_INTEGER Interval);
 EXPORT NTSTATUS PsCreateSystemThread(OUT PHANDLE ThreadHandle, IN ULONG DesiredAccess, IN OPTIONAL POBJECT_ATTRIBUTES ObjectAttributes, IN OPTIONAL HANDLE ProcessHandle, OUT OPTIONAL PCLIENT_ID ClientId, IN PKSTART_ROUTINE StartRoutine, IN OPTIONAL PVOID StartContext);

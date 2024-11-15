@@ -22,8 +22,12 @@ int main() {
             // ReSharper restore CppTooWideScopeInitStatement
 
             for (auto thunkData = reinterpret_cast<PIMAGE_THUNK_DATA>(mapped + importDescriptor->FirstThunk); thunkData->u1.AddressOfData; thunkData++) {
-                if (auto importByName = reinterpret_cast<PIMAGE_IMPORT_BY_NAME>(mapped + thunkData->u1.AddressOfData))
+                if (auto importByName = reinterpret_cast<PIMAGE_IMPORT_BY_NAME>(mapped + thunkData->u1.AddressOfData)) {
                     thunkData->u1.Function = reinterpret_cast<ULONGPTR>(GetProcAddress(ntoskrnl, importByName->Name));
+                    if (!thunkData->u1.Function) {
+                        std::cerr << "Unresolved import: " << importByName->Name << std::endl;
+                    }
+                }
             }
         }
     }

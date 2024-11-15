@@ -323,3 +323,8 @@ EXPORT PVOID MmMapLockedPagesSpecifyCache(IN PMDL Mdl, IN __drv_strictType(KPROC
 EXPORT void MmUnmapLockedPages(IN PVOID BaseAddress, IN OUT PMDL Mdl) {
     // Do nothing, lol
 }
+
+EXPORT NTSTATUS MmProtectMdlSystemAddress(IN PMDL Mdl, IN ULONG NewProtect) {
+    DWORD oldProtect = 0;
+    return VirtualProtect(Mdl->MappedSystemVa, Mdl->Size, NewProtect, &oldProtect) ? STATUS_SUCCESS : STATUS_UNSUCCESSFUL;
+}

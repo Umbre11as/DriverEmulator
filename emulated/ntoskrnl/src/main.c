@@ -596,3 +596,14 @@ EXPORT NTSTATUS ZwQuerySystemInformation(IN SYSTEM_INFORMATION_CLASS SystemInfor
     NtQuerySystemInformationFn nqsi = (NtQuerySystemInformationFn) GetProcAddress(ntdll, "NtQuerySystemInformation");
     return nqsi(SystemInformationClass, Information, Length, ReturnLength);
 }
+
+typedef NTSTATUS(*NTAPI RtlFindExportedRoutineByNameFn)(PVOID, PCSTR);
+
+EXPORT NTSTATUS RtlFindExportedRoutineByName(PVOID BaseOfImage, IN PCSTR RoutineName) {
+    HMODULE ntdll = GetModuleHandle("ntdll.dll");
+    if (ntdll == NULL)
+        ntdll = LoadLibrary("ntdll.dll");
+
+    RtlFindExportedRoutineByNameFn rferbn = (RtlFindExportedRoutineByNameFn) GetProcAddress(ntdll, "RtlFindExportedRoutineByName");
+    return rferbn(BaseOfImage, RoutineName);
+}

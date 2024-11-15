@@ -1,5 +1,7 @@
 #include "mdl.h"
 
+#include "../allocator/allocator.h"
+
 EXPORT PMDL IoAllocateMdl(IN OPTIONAL __drv_aliasesMem PVOID VirtualAddress, IN ULONG Length, IN BOOLEAN SecondaryBuffer, IN BOOLEAN ChargeQuota, IN OUT OPTIONAL PIRP Irp) {
     PMDL mdl = ExAllocatePool(NonPagedPoolNx, sizeof(MDL));
     SIZE_T size = (((WORD) VirtualAddress & 0xFFF) + (WORD) Length + 4095) >> 12;

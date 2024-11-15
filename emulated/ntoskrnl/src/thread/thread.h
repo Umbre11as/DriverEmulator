@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../types.h"
+#include "../keprocess.h"
 
 typedef struct _OBJECT_ATTRIBUTES {
     ULONG Length;

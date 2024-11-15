@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../allocator/allocator.h"
+#include "../keprocess.h"
 
 #define MM_DONT_ZERO_ALLOCATION                  0x00000001
 #define MM_ALLOCATE_FROM_LOCAL_NODE_ONLY         0x00000002
@@ -25,8 +25,6 @@
 #define MDL_MAPPING_CAN_FAIL        0x2000
 #define MDL_ALLOCATED_MUST_SUCCEED  0x4000
 #define MDL_INTERNAL                0x8000
-
-typedef PVOID PEPROCESS;
 
 typedef _Struct_size_bytes_(_Inexpressible_(sizeof(struct _MDL) + (ByteOffset + ByteCount + PAGE_SIZE-1) / PAGE_SIZE * sizeof(PFN_NUMBER))) struct _MDL {
     struct _MDL* Next;

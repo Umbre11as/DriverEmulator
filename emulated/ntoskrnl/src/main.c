@@ -76,14 +76,23 @@ PCSTR ConvertToAscii(IN PWCH UnicodeName) {
 }
 
 BOOL WINAPI DllMain(IN HINSTANCE InstanceHandle, IN DWORD Reason, IN PVOID Reserved) {
-    if (Reason == DLL_PROCESS_ATTACH)
-        AddVectoredExceptionHandler(1, VEHandler);
+    switch (Reason) {
+        case DLL_PROCESS_ATTACH: {
+            SYSTEM_PROCESS_INFORMATION systemProcess;
+            GetSystemProcess(&systemProcess);
 
-    SYSTEM_PROCESS_INFORMATION systemProcess;
-    GetSystemProcess(&systemProcess);
+            PsInitialSystemProcess = malloc(sizeof(EPROCESS));
+            memcpy(PsInitialSystemProcess->ImageFileName, ConvertToAscii(systemProcess.ImageName.Buffer), systemProcess.ImageName.Length);
 
-    PsInitialSystemProcess = malloc(sizeof(EPROCESS));
-    memcpy(PsInitialSystemProcess->ImageFileName, ConvertToAscii(systemProcess.ImageName.Buffer), systemProcess.ImageName.Length);
+            AddVectoredExceptionHandler(1, VEHandler);
+            break;
+        }
+        case DLL_PROCESS_DETACH: {
+            free(PsInitialSystemProcess->ImageFileName);
+            free(PsInitialSystemProcess);
+            break;
+        }
+    }
 
     return TRUE;
 }

@@ -19,7 +19,7 @@ int main() {
     PortableExecutable pe(buffer);
 
     PBYTE mapped = pe.Map();
-
+    bool allResolved = true;
     if (DWORD importsRVA = pe.NtHeaders->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress) {
         for (auto importDescriptor = reinterpret_cast<PIMAGE_IMPORT_DESCRIPTOR>(mapped + importsRVA); importDescriptor->Characteristics; importDescriptor++) {
             auto dllName = reinterpret_cast<PCSTR>(mapped + importDescriptor->Name);
@@ -28,12 +28,16 @@ int main() {
             for (auto thunkData = reinterpret_cast<PIMAGE_THUNK_DATA>(mapped + importDescriptor->FirstThunk); thunkData->u1.AddressOfData; thunkData++) {
                 if (auto importByName = reinterpret_cast<PIMAGE_IMPORT_BY_NAME>(mapped + thunkData->u1.AddressOfData)) {
                     thunkData->u1.Function = reinterpret_cast<ULONGPTR>(GetProcAddress(module, importByName->Name));
-                    if (!thunkData->u1.Function)
+                    if (!thunkData->u1.Function) {
                         std::cerr << "Unresolved import: " << importByName->Name << std::endl;
+                        allResolved = false;
+                    }
                 }
             }
         }
     }
+    if (!allResolved)
+        std::cerr << "Not all functions are resolved" << std::endl;
 
     DWORD oldProtect = 0;
     VirtualProtect(mapped, pe.NtHeaders->OptionalHeader.SizeOfImage, PAGE_EXECUTE_READWRITE, &oldProtect);

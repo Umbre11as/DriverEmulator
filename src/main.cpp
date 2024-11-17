@@ -36,8 +36,10 @@ int main() {
             }
         }
     }
-    if (!allResolved)
+    if (!allResolved) {
         std::cerr << "Not all functions are resolved" << std::endl;
+        return 1;
+    }
 
     DWORD oldProtect = 0;
     VirtualProtect(mapped, pe.NtHeaders->OptionalHeader.SizeOfImage, PAGE_EXECUTE_READWRITE, &oldProtect);

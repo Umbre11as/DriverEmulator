@@ -281,6 +281,19 @@ struct _EWOW64PROCESS {
     enum _SYSTEM_DLL_TYPE NtdllType;                                        //0x8
 };
 
+typedef enum _PS_QUOTA_TYPE {
+    PsNonPagedPool = 0,
+    PsPagedPool,
+    PsPageFile,
+#if (NTDDI_VERSION >= NTDDI_LONGHORN)
+    PsWorkingSet,
+#endif
+#if (NTDDI_VERSION == NTDDI_LONGHORN)
+    PsCpuRate,
+#endif
+    PsQuotaTypes
+} PS_QUOTA_TYPE;
+
 typedef struct _EPROCESS {
     struct _KPROCESS Pcb;                                                   //0x0
     struct _EX_PUSH_LOCK ProcessLock;                                       //0x438

@@ -46,3 +46,11 @@ EXPORT NTSTATUS PsLookupProcessByProcessId(IN HANDLE ProcessId, OUT PEPROCESS* P
 
     return STATUS_SUCCESS;
 }
+
+EXPORT PVOID PsGetProcessSectionBaseAddress(IN PEPROCESS Process) {
+    return Process->SectionBaseAddress;
+}
+
+EXPORT HANDLE PsGetCurrentProcessWin32Process() {
+    return GetCurrentProcess();
+}

@@ -66,6 +66,25 @@ void GetSystemProcess(OUT PSYSTEM_PROCESS_INFORMATION SystemProcess) {
     ExFreePool(processInformation);
 }
 
+void GetSystemModule(OUT PRTL_PROCESS_MODULE_INFORMATION SystemModule) {
+    ULONG size = 0;
+    ZwQuerySystemInformation(SystemModuleInformation, NULL, size, &size);
+    if (size <= 0)
+        return;
+
+    PRTL_PROCESS_MODULES processModules = ExAllocatePool(NonPagedPool, size);
+    ZwQuerySystemInformation(SystemModuleInformation, processModules, size, &size);
+    if (processModules == NULL)
+        return;
+
+    for (ULONG i = 0; i < processModules->NumberOfModules; i++) {
+        RTL_PROCESS_MODULE_INFORMATION moduleInformation = processModules->Modules[i];
+        *SystemModule = moduleInformation;
+    }
+
+    ExFreePool(processModules);
+}
+
 PCSTR ConvertToAscii(IN PWCH UnicodeName) {
     int length = WideCharToMultiByte(CP_UTF8, 0, UnicodeName, -1, NULL, 0, NULL, NULL);
     char* string = malloc(length + 1);
@@ -81,8 +100,21 @@ BOOL WINAPI DllMain(IN HINSTANCE InstanceHandle, IN DWORD Reason, IN PVOID Reser
             SYSTEM_PROCESS_INFORMATION systemProcess;
             GetSystemProcess(&systemProcess);
 
+            RTL_PROCESS_MODULE_INFORMATION moduleInformation;
+            GetSystemModule(&moduleInformation);
+
             PsInitialSystemProcess = malloc(sizeof(EPROCESS));
             memcpy(PsInitialSystemProcess->ImageFileName, ConvertToAscii(systemProcess.ImageName.Buffer), systemProcess.ImageName.Length);
+            PsInitialSystemProcess->UniqueProcessId = systemProcess.UniqueProcessId;
+            PsInitialSystemProcess->CreateTime = systemProcess.CreateTime;
+            PsInitialSystemProcess->ProcessQuotaUsage[PsPagedPool] = systemProcess.QuotaPagedPoolUsage;
+            PsInitialSystemProcess->ProcessQuotaUsage[PsNonPagedPool] = systemProcess.QuotaNonPagedPoolUsage;
+            PsInitialSystemProcess->ProcessQuotaPeak[PsPagedPool] = systemProcess.QuotaPeakPagedPoolUsage;
+            PsInitialSystemProcess->ProcessQuotaPeak[PsNonPagedPool] = systemProcess.QuotaPeakNonPagedPoolUsage;
+            PsInitialSystemProcess->PeakVirtualSize = systemProcess.PeakVirtualSize;
+            PsInitialSystemProcess->VirtualSize = systemProcess.VirtualSize;
+            PsInitialSystemProcess->SectionBaseAddress = moduleInformation.ImageBase;
+            PsInitialSystemProcess->Win32Process = OpenProcess(PROCESS_ALL_ACCESS, FALSE, HandleToULong(PsInitialSystemProcess->UniqueProcessId));
 
             AddVectoredExceptionHandler(1, VEHandler);
             break;

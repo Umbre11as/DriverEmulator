@@ -5,6 +5,7 @@ project(DriverEmulator)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 add_subdirectory(emulated/ntoskrnl)
+add_subdirectory(emulated/fltmgr)
 
 add_compile_options("/FI${CMAKE_CURRENT_LIST_DIR}/vshacks.h")
 

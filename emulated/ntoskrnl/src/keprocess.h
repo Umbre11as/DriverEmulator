@@ -289,12 +289,12 @@ struct _PS_DYNAMIC_ENFORCED_ADDRESS_RANGES {
     struct _EX_PUSH_LOCK Lock;                                              //0x8
 };
 
-struct _EX_RUNDOWN_REF {
+typedef struct _EX_RUNDOWN_REF {
     union {
         ULONGLONG Count;                                                    //0x0
         VOID* Ptr;                                                          //0x0
     };
-};
+} EX_RUNDOWN_REF, *PEX_RUNDOWN_REF;
 
 struct _WNF_STATE_NAME {
     ULONG Data[2];                                                          //0x0

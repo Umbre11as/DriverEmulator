@@ -1,7 +1,7 @@
-include("${CMAKE_CURRENT_LIST_DIR}/cmake/flags.cmake")
+include("../cmake/flags.cmake")
 project(ntoskrnl)
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH "../cmake")
 
 file(GLOB_RECURSE SOURCES "src/*.c")
 

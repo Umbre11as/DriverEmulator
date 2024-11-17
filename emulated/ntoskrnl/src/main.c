@@ -6,6 +6,7 @@
 #include "mdl/mdl.h"
 #include "thread/thread.h"
 #include "process/process.h"
+#include "ex/ex.h"
 
 PVOID LastCheckAddress = NULL;
 BOOLEAN BadAddressCheck = FALSE;

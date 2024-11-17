@@ -6,6 +6,10 @@ using DriverEntryFn = NTSTATUS(*)(PVOID, PVOID);
 
 int main() {
     std::vector<BYTE> buffer = Utils::File::Read(R"(..\environment\HelloWorld.sys)");
+    if (buffer.empty()) {
+        fprintf(stderr, "File not found\n");
+        return 1;
+    }
     PortableExecutable pe(buffer);
 
     PBYTE mapped = pe.Map();
@@ -24,9 +28,8 @@ int main() {
             for (auto thunkData = reinterpret_cast<PIMAGE_THUNK_DATA>(mapped + importDescriptor->FirstThunk); thunkData->u1.AddressOfData; thunkData++) {
                 if (auto importByName = reinterpret_cast<PIMAGE_IMPORT_BY_NAME>(mapped + thunkData->u1.AddressOfData)) {
                     thunkData->u1.Function = reinterpret_cast<ULONGPTR>(GetProcAddress(ntoskrnl, importByName->Name));
-                    if (!thunkData->u1.Function) {
+                    if (!thunkData->u1.Function)
                         std::cerr << "Unresolved import: " << importByName->Name << std::endl;
-                    }
                 }
             }
         }

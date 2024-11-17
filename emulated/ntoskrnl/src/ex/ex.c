@@ -1,5 +1,7 @@
 #include "ex.h"
 
+#include "io.c"
+
 BOOLEAN ExfAcquireRundownProtection(IN PEX_RUNDOWN_REF RunRef) {
     _m_prefetchw(RunRef);
 
@@ -27,10 +29,6 @@ EXPORT BOOLEAN ExAcquireRundownProtection(IN PEX_RUNDOWN_REF RunRef) {
         return TRUE;
 
     return ExfAcquireRundownProtection(RunRef);
-}
-
-EXPORT LONG KeSetEvent(IN OUT PRKEVENT Event, IN KPRIORITY Increment, IN BOOLEAN Wait) {
-    return 0; // TODO: Realize KeSetEvent
 }
 
 void ExfReleaseRundownProtection(IN PEX_RUNDOWN_REF RunRef) {

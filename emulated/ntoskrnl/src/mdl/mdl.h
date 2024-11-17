@@ -44,12 +44,6 @@ typedef enum _LOCK_OPERATION {
     IoModifyAccess
 } LOCK_OPERATION;
 
-typedef enum _MODE {
-    KernelMode,
-    UserMode,
-    MaximumMode
-} MODE;
-
 typedef enum _MEMORY_CACHING_TYPE_ORIG {
     MmFrameBufferCached = 2
 } MEMORY_CACHING_TYPE_ORIG;

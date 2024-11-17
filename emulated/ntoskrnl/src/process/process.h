@@ -10,3 +10,4 @@ EXPORT HANDLE PsGetCurrentProcessId();
 EXPORT NTSTATUS PsLookupProcessByProcessId(IN HANDLE ProcessId, OUT PEPROCESS* Process);
 EXPORT PVOID PsGetProcessSectionBaseAddress(IN PEPROCESS Process);
 EXPORT HANDLE PsGetCurrentProcessWin32Process();
+EXPORT PPEB PsGetProcessPeb(IN PEPROCESS Process);

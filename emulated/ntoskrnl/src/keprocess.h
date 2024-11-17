@@ -55,6 +55,30 @@ typedef struct _DISPATCHER_HEADER {
     LIST_ENTRY WaitListHead;
 } DISPATCHER_HEADER, *PDISPATCHER_HEADER;
 
+typedef struct _PEB_LDR_DATA {
+    ULONG Length;
+    UCHAR Initialized;
+    PVOID SsHandle;
+    LIST_ENTRY InLoadOrderModuleList;
+    LIST_ENTRY InMemoryOrderModuleList;
+    LIST_ENTRY InInitializationOrderModuleList;
+} PEB_LDR_DATA, *PPEB_LDR_DATA;
+
+typedef struct _PEB {
+    UCHAR InheritedAddressSpace;
+    UCHAR ReadImageFileExecOptions;
+    UCHAR BeingDebugged;
+    UCHAR BitField;
+    ULONG ImageUsesLargePages: 1;
+    ULONG IsProtectedProcess: 1;
+    ULONG IsLegacyProcess: 1;
+    ULONG IsImageDynamicallyRelocated: 1;
+    ULONG SpareBits: 4;
+    PVOID Mutant;
+    PVOID ImageBaseAddress;
+    PPEB_LDR_DATA Ldr;
+} PEB, *PPEB;
+
 typedef struct _KPROCESS {
     struct _DISPATCHER_HEADER Header;                                       //0x0
     struct _LIST_ENTRY ProfileListHead;                                     //0x18

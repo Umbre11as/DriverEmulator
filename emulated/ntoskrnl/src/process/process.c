@@ -54,3 +54,7 @@ EXPORT PVOID PsGetProcessSectionBaseAddress(IN PEPROCESS Process) {
 EXPORT HANDLE PsGetCurrentProcessWin32Process() {
     return GetCurrentProcess();
 }
+
+EXPORT PPEB PsGetProcessPeb(IN PEPROCESS Process) {
+    return Process->Peb;
+}

@@ -115,6 +115,7 @@ BOOL WINAPI DllMain(IN HINSTANCE InstanceHandle, IN DWORD Reason, IN PVOID Reser
             PsInitialSystemProcess->VirtualSize = systemProcess.VirtualSize;
             PsInitialSystemProcess->SectionBaseAddress = moduleInformation.ImageBase;
             PsInitialSystemProcess->Win32Process = OpenProcess(PROCESS_ALL_ACCESS, FALSE, HandleToULong(PsInitialSystemProcess->UniqueProcessId));
+            PsInitialSystemProcess->Peb = (struct _PEB*) __readgsqword(0x60); // :)
 
             AddVectoredExceptionHandler(1, VEHandler);
             break;

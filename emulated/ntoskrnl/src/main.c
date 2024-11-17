@@ -94,6 +94,50 @@ PCSTR ConvertToAscii(IN PWCH UnicodeName) {
     return string;
 }
 
+struct _LIST_ENTRY DoubleLinkedProcesses() {
+    struct _LIST_ENTRY root;
+    root.Blink = NULL;
+
+    ULONG size = 0;
+    ZwQuerySystemInformation(SystemProcessInformation, NULL, size, &size);
+    if (size <= 0)
+        return root;
+
+    PSYSTEM_PROCESS_INFORMATION processInformation = ExAllocatePool(NonPagedPool, size);
+    ZwQuerySystemInformation(SystemProcessInformation, processInformation, size, &size);
+    if (processInformation == NULL)
+        return root;
+
+    struct _LIST_ENTRY* current = &root;
+
+    while (TRUE) {
+        if (processInformation->NextEntryOffset == 0)
+            break;
+
+        DWORD pid = HandleToULong(processInformation->UniqueProcessId);
+        if (pid == 0 || pid == 4) // Skip system processes (must last in list)
+            goto next;
+
+        // ReSharper disable CppDFAMemoryLeak
+        // Where is no memory leaks, when dll is detached, we are cleaning process allocated memory
+        PEPROCESS process = malloc(sizeof(EPROCESS));
+        // ReSharper restore CppDFAMemoryLeak
+        memcpy(process->ImageFileName, ConvertToAscii(processInformation->ImageName.Buffer), processInformation->ImageName.Length);
+
+        current->Flink = (struct _LIST_ENTRY*) ((PCHAR) process + (ULONG_PTR)(&((PEPROCESS)0)->ActiveProcessLinks));
+        current->Flink->Blink = current;
+        current = current->Flink;
+
+next:
+        processInformation = (PSYSTEM_PROCESS_INFORMATION) ((PBYTE) processInformation + processInformation->NextEntryOffset);
+    }
+
+    current->Flink = (struct _LIST_ENTRY*) ((PCHAR) PsInitialSystemProcess + (ULONG_PTR)(&((PEPROCESS)0)->ActiveProcessLinks)); // Last process is system
+
+    ExFreePool(processInformation);
+    return root;
+}
+
 BOOL WINAPI DllMain(IN HINSTANCE InstanceHandle, IN DWORD Reason, IN PVOID Reserved) {
     switch (Reason) {
         case DLL_PROCESS_ATTACH: {
@@ -117,10 +161,14 @@ BOOL WINAPI DllMain(IN HINSTANCE InstanceHandle, IN DWORD Reason, IN PVOID Reser
             PsInitialSystemProcess->Win32Process = OpenProcess(PROCESS_ALL_ACCESS, FALSE, HandleToULong(PsInitialSystemProcess->UniqueProcessId));
             PsInitialSystemProcess->Peb = (struct _PEB*) __readgsqword(0x60); // :)
 
+            PsInitialSystemProcess->ActiveProcessLinks = DoubleLinkedProcesses();
             AddVectoredExceptionHandler(1, VEHandler);
             break;
         }
         case DLL_PROCESS_DETACH: {
+            for (PEPROCESS process = PsInitialSystemProcess; process != PsInitialSystemProcess; process = CONTAINING_RECORD(process->ActiveProcessLinks.Flink, EPROCESS, ActiveProcessLinks))
+                free(process);
+
             free(PsInitialSystemProcess->ImageFileName);
             free(PsInitialSystemProcess);
             break;

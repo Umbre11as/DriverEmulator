@@ -415,5 +415,5 @@ typedef struct _SYSTEM_PROCESS_INFORMATION {
 typedef NTSTATUS(*NTAPI NtQuerySystemInformationFn)(IN SYSTEM_INFORMATION_CLASS, IN OUT PVOID, IN ULONG, OUT OPTIONAL PULONG);\
 EXPORT NTSTATUS ZwQuerySystemInformation(IN SYSTEM_INFORMATION_CLASS SystemInformationClass, IN OUT PVOID Information, IN ULONG Length, OUT OPTIONAL PULONG ReturnLength);
 
-typedef NTSTATUS(*NTAPI RtlFindExportedRoutineByNameFn)(IN PVOID, IN PCSTR);
-EXPORT NTSTATUS RtlFindExportedRoutineByName(IN PVOID BaseOfImage, IN PCSTR RoutineName);
+typedef PVOID(*NTAPI RtlFindExportedRoutineByNameFn)(IN PVOID, IN PCSTR);
+EXPORT PVOID RtlFindExportedRoutineByName(IN PVOID BaseOfImage, IN PCSTR RoutineName);

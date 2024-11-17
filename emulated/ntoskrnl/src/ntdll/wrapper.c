@@ -9,7 +9,7 @@ EXPORT NTSTATUS ZwQuerySystemInformation(IN SYSTEM_INFORMATION_CLASS SystemInfor
     return nqsi(SystemInformationClass, Information, Length, ReturnLength);
 }
 
-EXPORT NTSTATUS RtlFindExportedRoutineByName(IN PVOID BaseOfImage, IN PCSTR RoutineName) {
+EXPORT PVOID RtlFindExportedRoutineByName(IN PVOID BaseOfImage, IN PCSTR RoutineName) {
     HMODULE ntdll = GetModuleHandle("ntdll.dll");
     if (ntdll == NULL)
         ntdll = LoadLibrary("ntdll.dll");

@@ -21,7 +21,6 @@ int main() {
             auto dllName = reinterpret_cast<PCSTR>(mapped + importDescriptor->Name);
             if (strcmp(dllName, "ntoskrnl.exe") != 0) {
                 std::cerr << "Unsupported target module: " << dllName << std::endl;
-                break;
             }
             // ReSharper restore CppTooWideScopeInitStatement
 

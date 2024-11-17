@@ -13,7 +13,7 @@ std::unordered_map<std::string, std::string> modulePerModule {
 int main() {
     std::vector<BYTE> buffer = Utils::File::Read(R"(..\environment\HelloWorld.sys)");
     if (buffer.empty()) {
-        fprintf(stderr, "File not found\n");
+        std::cerr << "File not found" << std::endl;
         return 1;
     }
     PortableExecutable pe(buffer);

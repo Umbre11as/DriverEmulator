@@ -92,6 +92,7 @@ BOOL WINAPI DllMain(IN HINSTANCE InstanceHandle, IN DWORD Reason, IN PVOID Reser
             free(PsInitialSystemProcess);
             break;
         }
+        default: break;
     }
 
     return TRUE;
